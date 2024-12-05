@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "39629AC0-C235-40CA-876A-70C2D39016A6",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Configurator.xcodeproj",
+        "identifier" : "01A8A6652BD99BC500D84DBC",
+        "name" : "ConfiguratorTests"
+      }
+    }
+  ],
+  "version" : 1
+}

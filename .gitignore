@@ -1,0 +1,14 @@
+.DS_Store
+.vscode/
+xcuserdata/
+
+test_output/
+
+# ignore the build directories and local helper files
+localuser.xcconfig
+localuser.sh
+cache/
+build/
+logs/
+.vscode
+
