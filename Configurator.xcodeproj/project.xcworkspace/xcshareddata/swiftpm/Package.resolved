@@ -1,13 +1,13 @@
 {
-  "originHash" : "510c7bfa51e0c30528c1ef5f46410bf7cf0d7fcfa227750709ee0614ecf7b2d1",
+  "originHash" : "f6965dbb21182766e4fb6fcdb4e9e0ee5709880b753e6869dea8304795cdcfa5",
   "pins" : [
     {
       "identity" : "cloudxr-framework",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/NVIDIA/cloudxr-framework.git",
+      "location" : "https://github.com/arjundube-nv/cloudxr-framework",
       "state" : {
-        "revision" : "fff3a271d89dbcfc82d3addbbe22b0649702c3a0",
-        "version" : "5.0.0"
+        "branch" : "staging/5.0.1",
+        "revision" : "8368c9269377c024d21eb75e2b96578b50dd77ad"
       }
     }
   ],

@@ -20,7 +20,6 @@ struct SavedSettings {
 @Observable
 public class AppModel {
     public var session: Session?
-    var anyImmersiveSpaceRunning = false
 
 #if DEBUG
     var disableFeedback = true
@@ -52,5 +51,6 @@ public class AppModel {
 
     #if os(visionOS)
     let hmdProperties = HmdProperties()
+    let windowStateManager = WindowStateManager()
     #endif
 }

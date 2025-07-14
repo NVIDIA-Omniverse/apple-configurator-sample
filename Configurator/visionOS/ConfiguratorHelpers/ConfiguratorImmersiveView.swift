@@ -81,15 +81,9 @@ struct ConfiguratorImmersiveView: View {
             }
         }
         .placing(with: placementManager, sceneEntity: sceneEntity, placeable: configuratorViewModel)
-        .gesture(
-            configuratorAppModel.gestureHelper?.dragGesture
-        )
-        .gesture(
-            SimultaneousGesture(
-                configuratorAppModel.gestureHelper?.rotationGesture,
-                configuratorAppModel.gestureHelper?.magnifyGesture
-            )
-        )
+        .simultaneousGesture(configuratorAppModel.gestureHelper?.dragGesture)
+        .simultaneousGesture(configuratorAppModel.gestureHelper?.rotationGesture)
+        .simultaneousGesture(configuratorAppModel.gestureHelper?.magnifyGesture)
         .onChange(of: configuratorAppModel.session?.state) { oldState, newState in
             if newState == .connected {
                 configuratorAppModel.asset.stateManager.startPolling()

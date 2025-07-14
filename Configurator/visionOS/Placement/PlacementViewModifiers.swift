@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -22,10 +22,12 @@ struct PlacementModifier: ViewModifier {
         // signal when the user dismisses the view. This ensures that
         // loops that await anchor updates from the ARKit data providers
         // immediately end.
-        .gesture(
-            SpatialTapGesture().targetedToAnyEntity().onEnded { event in
-                placementManager.tap(event: event, rootEntity: sceneEntity)
-            }
+        .simultaneousGesture(
+            // Only apply placement gesture when in placement mode
+            placeable.isPlacing ?
+                SpatialTapGesture().targetedToAnyEntity().onEnded { event in
+                    placementManager.tap(event: event, rootEntity: sceneEntity)
+                } : nil
         )
     }
 }

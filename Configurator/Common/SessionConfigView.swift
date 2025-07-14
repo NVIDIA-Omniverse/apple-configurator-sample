@@ -19,19 +19,18 @@ struct SessionConfigView: View {
     @AppStorage("authMethod") private(set) var authMethod: AuthMethod = .starfleet
     @AppStorage("resolutionPreset") private var resolutionPreset: ResolutionPreset = .standardPreset
 
+
     @AppStorage("genericAppID") var genericAppID: Int = 0
 
     @Environment(AppModel.self) var appModel
     @Environment(\.colorScheme) var colorScheme
-    
+
 #if os(visionOS)
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     // TODO(tifchen): Revisit whether this can be included for iOS.
 #endif
 
-    @State var captcha = UIImage()
-    @State var captchaText = ""
-    @State var captchaPrompt = "Enter image text here"
+
     @State var awsalb = ""
     @State var sessionId = ""
     @State private var showIpdMeasurementPopOver = false
@@ -89,7 +88,7 @@ struct SessionConfigView: View {
                                 Button("Measure ipd") {
                                     appModel.hmdProperties.beginIpdCheck(openImmersiveSpace: openImmersiveSpace, forceRefresh: true)
                                 }
-                                .disabled(appModel.anyImmersiveSpaceRunning || appModel.session?.state == .paused)
+                                .disabled(appModel.windowStateManager.immersiveSpaceActive || appModel.session?.state == .paused)
                                 .cornerRadius(20)
                                 .multilineTextAlignment(.trailing)
                             }
@@ -101,9 +100,9 @@ struct SessionConfigView: View {
                             ForEach (Zone.allCases, id: \.self) { Text($0.rawValue) }
                         }
                         .onChange(of: zone) {
-                            if zone != .us_west {
+                            if zone == .ipAddress {
                                 // Dummy call to trigger request local network permissions early
-                                NetServiceBrowser().searchForServices(ofType: "_http", inDomain: "")
+                                NetServiceBrowser().searchForServices(ofType: "_http._tcp.", inDomain: "local.")
                             }
                         }
                         if zone == .ipAddress {
@@ -111,9 +110,16 @@ struct SessionConfigView: View {
                                 Text("IP Address")
                                 Spacer()
                                 TextField("0.0.0.0", text: $hostAddress)
-                                    .disableAutocorrection(true)
                                     .autocapitalization(.none)
                                     .multilineTextAlignment(.trailing)
+                                    .autocorrectionDisabled(true)
+                                    .textInputAutocapitalization(.never)
+                                    .keyboardType(.numbersAndPunctuation)
+                                    .searchDictationBehavior(.inline(activation: .onLook))
+                                    .onSubmit {
+                                        // strip whitespace
+                                        hostAddress = hostAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+                                    }
                             }
                         } else {
                             HStack {
@@ -149,8 +155,9 @@ struct SessionConfigView: View {
                                 }
                                 .frame(width: 500)
                                 .onChange(of: zone) {
-                                    if zone != .us_west {
-                                        NetServiceBrowser().searchForServices(ofType: "_http", inDomain: "")
+                                    if zone == .ipAddress {
+                                        // Dummy call to trigger request local network permissions early
+                                        NetServiceBrowser().searchForServices(ofType: "_http._tcp.", inDomain: "local.")
                                     }
                                 }
                                 if zone == .ipAddress {
@@ -162,9 +169,16 @@ struct SessionConfigView: View {
                                             .frame(alignment: .leading)
                                         Spacer()
                                         TextField("0.0.0.0", text: $hostAddress)
-                                            .disableAutocorrection(true)
                                             .autocapitalization(.none)
                                             .multilineTextAlignment(.trailing)
+                                            .autocorrectionDisabled(true)
+                                            .textInputAutocapitalization(.never)
+                                            .keyboardType(.numbersAndPunctuation)
+                                            .searchDictationBehavior(.inline(activation: .onLook))
+                                            .onSubmit {
+                                                // strip whitespace
+                                                hostAddress = hostAddress.trimmingCharacters(in: .whitespacesAndNewlines)
+                                            }
                                     }
                                     .frame(width: 500)
                                 } else {
@@ -215,32 +229,13 @@ struct SessionConfigView: View {
                         }
                     }
 #if os(visionOS)
-                .frame(minHeight: 250, maxHeight: 790)
+                .frame(minHeight: 350, maxHeight: 790)
 #elseif os(iOS)
                 .frame(minHeight: 160, maxHeight: 690)
 #endif
 
-                if displayCAPTCHA {
-                    Button("Regenerate CAPTCHA image") {
-                        Task {
-                            try await getCaptchaImage()
-                        }
-                    }
-                    Image(uiImage: captcha).onAppear {
-                        Task {
-                            try await getCaptchaImage()
-                        }
-                    }
-                    .padding()
-                    TextField(captchaPrompt, text: $captchaText)
-                        .disableAutocorrection(true)
-                        .autocapitalization(.none)
-                        .multilineTextAlignment(.center)
-                        .font(.system(size: 40))
-                        .padding()
-                }
+
                 Button(buttonLabel) {
-                    captchaPrompt = "Enter image text here"
 
                     if appModel.session?.state == .paused {
                         try! appModel.session?.resume()
@@ -264,6 +259,7 @@ struct SessionConfigView: View {
                     let preset = resolutionPreset
                     var cxrConfig = CloudXRKit.Config()
                     cxrConfig.resolutionPreset = preset
+
 
                     var appID: UInt = 0
 
@@ -296,29 +292,21 @@ struct SessionConfigView: View {
                         if usingGuestMode {
                             var comps = URLComponents()
                             comps.scheme = "https"
-                            comps.host = apiHost
-                            comps.path = nonceEndpoint
-                            comps.queryItems = [
-                                URLQueryItem(name: "locale", value: Locale.current.identifier(Locale.IdentifierType.bcp47)),
-                                URLQueryItem(name: "t", value: self.captchaText),
-                                URLQueryItem(name: "app", value: "cloudxr"),
-                                URLQueryItem(name: "cms_id", value: String(appID)),
-                            ]
+                            // TODO: Please replace this with your actual nonce endpoint.
+                            comps.host = "dummy-nonce-host.com"
                             let nonceURL = comps.url!
                             var nonce: String
                             do {
                                 nonce = try await getGuestNonce(url: nonceURL)
                             } catch {
-                                self.captchaText = ""
-                                self.captchaPrompt = "CAPTCHA error, please try again"
-                                try await getCaptchaImage()
+                                Self.logger.error("Nonce request failed. Have you configured the nonce endpoint?")
                                 return
                             }
-                            self.captchaText = ""
+
 
                             cxrConfig.connectionType = .nvGraphicsDeliveryNetwork(
                                 appId: UInt(appID),
-                                authenticationType: .guest(partnerId: partnerIdentifier, tokenHost: comps.url!, nonce: nonce),
+                                authenticationType: .guest(partnerId: partnerIdentifier, tokenHost: nonceURL, nonce: nonce),
                                 zone: zone.id)
                         }
 

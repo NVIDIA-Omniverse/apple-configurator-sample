@@ -16,6 +16,7 @@ struct LaunchView: View {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
     @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.scenePhase) var scenePhase
     @Environment(AppModel.self) var appModel
 
     // Configurator-specific environment objects.
@@ -49,6 +50,9 @@ struct LaunchView: View {
                         configuratorAppModel.setup(application: application, configuratorViewModel: configuratorViewModel, session: session)
 
                         showImmersiveSpace()
+                    }
+                    .onChange(of: scenePhase) {
+                        appModel.windowStateManager.windowOnScenePhaseChange(scenePhase: scenePhase)
                     }
                     Spacer(minLength: 24)
                 }
