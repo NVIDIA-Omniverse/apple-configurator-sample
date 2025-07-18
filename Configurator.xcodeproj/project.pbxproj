@@ -53,8 +53,8 @@
 		A725B0302C6EC005000248FE /* StarRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A725B02F2C6EC005000248FE /* StarRatingView.swift */; };
 		BD00C8412D31D6CE006A341D /* UIStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AFA44E2BF7D8C5004B6F6B /* UIStyles.swift */; };
 		BD00C8452D31E34A006A341D /* UIStyles+visionOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD00C8442D31E33D006A341D /* UIStyles+visionOS.swift */; };
-		DA02C2F42E2590AB007F789A /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA02C2F32E2590AB007F789A /* CloudXRKit */; };
-		DA02C2F62E2590B6007F789A /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA02C2F52E2590B6007F789A /* CloudXRKit */; };
+		DA956B542E2AD283003ABC02 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA956B532E2AD283003ABC02 /* CloudXRKit */; };
+		DA956B562E2AD28C003ABC02 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA956B552E2AD28C003ABC02 /* CloudXRKit */; };
 		FB9895E82E00F1970041368D /* WindowStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9895E72E00F1970041368D /* WindowStateManager.swift */; };
 		FB9895E92E00F1970041368D /* WindowStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9895E72E00F1970041368D /* WindowStateManager.swift */; };
 		FBAAC52A2D2FC3E500F2117D /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAAC5292D2FC3E500F2117D /* TestHelper.swift */; };
@@ -129,7 +129,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA02C2F62E2590B6007F789A /* CloudXRKit in Frameworks */,
+				DA956B562E2AD28C003ABC02 /* CloudXRKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA02C2F42E2590AB007F789A /* CloudXRKit in Frameworks */,
+				DA956B542E2AD283003ABC02 /* CloudXRKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,7 +305,7 @@
 			);
 			name = "CombinedViewer-iOS";
 			packageProductDependencies = (
-				DA02C2F52E2590B6007F789A /* CloudXRKit */,
+				DA956B552E2AD28C003ABC02 /* CloudXRKit */,
 			);
 			productName = CloudXRViewer;
 			productReference = 9CAEE0F42D307CF90030E3F6 /* Configurator.app */;
@@ -329,7 +329,7 @@
 			);
 			name = "CombinedViewer-visionOS";
 			packageProductDependencies = (
-				DA02C2F32E2590AB007F789A /* CloudXRKit */,
+				DA956B532E2AD283003ABC02 /* CloudXRKit */,
 			);
 			productName = CloudXRViewer;
 			productReference = EAD044762B1E9D7D00EDCD8B /* Configurator.app */;
@@ -364,7 +364,7 @@
 			);
 			mainGroup = EAA206412B16737300B5867E;
 			packageReferences = (
-				DA02C2F22E2590AB007F789A /* XCRemoteSwiftPackageReference "cloudxr-framework" */,
+				DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */,
 			);
 			productRefGroup = EAA2066E2B16784400B5867E /* Products */;
 			projectDirPath = "";
@@ -1122,25 +1122,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		DA02C2F22E2590AB007F789A /* XCRemoteSwiftPackageReference "cloudxr-framework" */ = {
+		DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/arjundube-nv/cloudxr-framework";
+			repositoryURL = "https://github.com/NVIDIA/cloudxr-framework";
 			requirement = {
-				branch = staging/5.0.1;
-				kind = branch;
+				kind = exactVersion;
+				version = 5.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		DA02C2F32E2590AB007F789A /* CloudXRKit */ = {
+		DA956B532E2AD283003ABC02 /* CloudXRKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DA02C2F22E2590AB007F789A /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
+			package = DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
 			productName = CloudXRKit;
 		};
-		DA02C2F52E2590B6007F789A /* CloudXRKit */ = {
+		DA956B552E2AD28C003ABC02 /* CloudXRKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DA02C2F22E2590AB007F789A /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
+			package = DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
 			productName = CloudXRKit;
 		};
 /* End XCSwiftPackageProductDependency section */
