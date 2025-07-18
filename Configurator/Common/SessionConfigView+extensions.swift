@@ -14,7 +14,7 @@ import OSLog
 
 enum AuthMethod: String, CaseIterable {
     case starfleet = "Geforce NOW login"
-    case guest = "CAPTCHA"
+    case guest = "Guest Mode"
 }
 
 enum Zone: String, CaseIterable {
@@ -60,16 +60,13 @@ enum Application: String, CaseIterable {
 
     var isConfigurator: Bool {
         switch self {
-            
+
         default:
             true
         }
     }
 }
 
-let apiHost = "api-prod.nvidia.com"
-let captchaEndpoint = "/gfn-als-app/api/captcha/img"
-let nonceEndpoint = "/gfn-als-app/api/als/nonce"
 
 let partnerIdentifier = ""
 
@@ -81,11 +78,6 @@ extension SessionConfigView {
         let AWSALB: String
     }
 
-    struct CaptchaResponse : Codable {
-        let base64Data: String
-        let cSessionId: String
-        let AWSALB: String
-    }
 
     var stateDescription: String {
         appModel.session?.state.description ?? ""
@@ -99,14 +91,6 @@ extension SessionConfigView {
         }
     }
 
-    var displayCAPTCHA: Bool {
-        switch appModel.session?.state {
-        case nil, .disconnected, .initialized:
-            usingGuestMode
-        default:
-            false
-        }
-    }
 
     var usingGuestMode: Bool {
         authMethod == .guest && zone != .ipAddress
@@ -119,13 +103,11 @@ extension SessionConfigView {
         case .connected, .paused:
             false
         default:
-            requiredCAPTCHAEmpty
+            false
         }
     }
 
-    var requiredCAPTCHAEmpty: Bool {
-        usingGuestMode && captchaText.isEmpty
-    }
+
     func getGuestNonce(url: URL) async throws -> String {
         var req = URLRequest(url: url)
 
@@ -136,7 +118,7 @@ extension SessionConfigView {
         req.addValue("*/*", forHTTPHeaderField: "Accept")
 
         req.httpBody = try! JSONEncoder().encode(NonceReqData(cSessionId: sessionId, AWSALB: awsalb))
-        let (data, _) = try! await URLSession.shared.data(for: req)
+        let (data, _) = try await URLSession.shared.data(for: req)
 
         struct NonceRespData : Codable {
             let nonce: String
@@ -145,19 +127,4 @@ extension SessionConfigView {
         return nonceResp.nonce
     }
 
-    func getCaptchaImage() async throws {
-        var comps = URLComponents()
-        comps.scheme = "https"
-        comps.host = apiHost
-        comps.path = captchaEndpoint
-
-        let (data, _) = try await URLSession.shared.data(from: comps.url!)
-
-        let response = try JSONDecoder().decode(CaptchaResponse.self, from: data)
-
-        let imgData = Data(base64Encoded: response.base64Data)!
-        self.captcha = UIImage(data: imgData)!
-        self.awsalb = response.AWSALB
-        self.sessionId = response.cSessionId
-    }
 }

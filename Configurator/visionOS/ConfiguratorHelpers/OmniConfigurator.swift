@@ -38,6 +38,7 @@ struct OmniConfigurator: View {
     @Environment(AppModel.self) var appModel
     @Environment(ConfiguratorViewModel.self) var configuratorViewModel
     @Environment(ConfiguratorAppModel.self) var configuratorAppModel
+    @Environment(\.scenePhase) var scenePhase
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
 
     /// current section being displayed
@@ -107,6 +108,7 @@ struct OmniConfigurator: View {
             }
             .ornamentStyle
         }
+
         // align all the useful information to the top of the window
         Spacer()
     }

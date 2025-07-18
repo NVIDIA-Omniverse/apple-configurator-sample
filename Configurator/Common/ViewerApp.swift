@@ -25,6 +25,7 @@ struct ViewerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
 
     @State private var appModel = AppModel()
     @State var showDisconnectionErrorAlert = false
@@ -75,11 +76,28 @@ struct ViewerApp: App {
                     makeDisconnectionAlert()
                 }
                 .onAppear {
+                    appModel.windowStateManager
+                        .windowOnAppear(
+                            appModel: appModel,
+                            openImmersiveSpace: openImmersiveSpace,
+                            dismissImmersiveSpace: dismissImmersiveSpace,
+                            openWindow: openWindow,
+                            dismissWindow: dismissWindow
+                        )
                     appDelegate.session = appModel.session
                     if #available(visionOS 2.4, *) {
                         // Skip the IPD check as the tracking system will do so
                     } else {
                         appModel.hmdProperties.beginIpdCheck(openImmersiveSpace: openImmersiveSpace, forceRefresh: false)
+                    }
+                }
+                .onDisappear {
+                    appModel.windowStateManager.windowOnDisappear()
+                }
+                .onChange(of: appModel.session?.state) { oldState, newState in
+                    guard let oldState, let newState else { return }
+                    Task {
+                        await appModel.windowStateManager.onConnectionStateChanged(oldState: oldState, newState: newState)
                     }
                 }
         }
@@ -93,39 +111,22 @@ struct ViewerApp: App {
                     .environment(configuratorAppModel)
                     .environment(configuratorViewModel)
                     .onDisappear {
-                        appModel.anyImmersiveSpaceRunning = false
-                        switch appModel.session?.state {
-                        case .connecting, .connected:
-                            appModel.session?.pause()
-                        default:
-                            return
-                        }
+                        appModel.windowStateManager.immersiveSpaceOnDisappear()
                     }
                     .onAppear {
-                        appModel.anyImmersiveSpaceRunning = true
+                        appModel.windowStateManager.immersiveSpaceOnAppear()
+                    }
+                    .onTapGesture(count: 3) {
+                        appModel.windowStateManager.toggleWindow()
+                    }.onChange(of: scenePhase) { // TODO: Update when can test
+                        if scenePhase == .background { // Handle headset doffing during session
+                            appModel.windowStateManager.dismissImmersiveSpaceIfOpen()
+                        }
                     }
             }
 
         }
         .environment(appModel)
-        .onChange(of: scenePhase) {
-            if scenePhase == .background {
-                appModel.anyImmersiveSpaceRunning = false
-                switch appModel.session?.state {
-                case .connecting, .connected:
-                    appModel.session?.pause()
-                default:
-                    return
-                }
-            } else if scenePhase == .active {
-                if appModel.session?.state == SessionState.paused {
-                    Task {
-                        await openImmersiveSpace(id: immersiveTitle)
-                        try appModel.session?.resume()
-                    }
-                }
-            }
-        }
         .onChange(of: appModel.session?.state) { oldState, newState in
             guard let oldState, let newState else { return }
             if case SessionState.disconnected = oldState {
