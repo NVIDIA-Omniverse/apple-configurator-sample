@@ -42,6 +42,7 @@ struct ConfiguratorImmersiveView: View {
 
             sceneEntity.components[ViewingModeComponent.self] = .init(
                 configuratorAppModel: configuratorAppModel,
+                configuratorViewModel: configuratorViewModel,
                 cloudXrEntity: sessionEntity,
                 spinnerEntity: spinnerEntity
             )

@@ -56,7 +56,7 @@ struct CameraSheet: View {
 
     func cameraButton(_ camera: AssetCamera, reset: Bool) -> some View {
         Button {
-            configuratorAppModel.session?.sendServerMessage(encodeJSON(camera.encodable))
+            configuratorAppModel.send(camera)
             dismiss()
         } label: {
             Text(camera.description)

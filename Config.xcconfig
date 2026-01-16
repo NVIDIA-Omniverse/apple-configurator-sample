@@ -1,0 +1,16 @@
+//
+//  Config.xcconfig
+//  Configurator
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Build configuration
+MARKETING_VERSION = 6.0.2
+OTHER_SWIFT_FLAGS = -DnotStrippedCar -DnotStrippedPurse -DnotStrippedGeneric -DnotStripped
+PRODUCT_BUNDLE_IDENTIFIER = com.nvidia.purse-config
+
+// App IDs
+PURSE_CONFIGURATOR_APP_ID = 103230632
+NISSAN_CONFIGURATOR_APP_ID = 102760311

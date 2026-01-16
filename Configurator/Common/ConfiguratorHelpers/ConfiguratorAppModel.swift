@@ -19,7 +19,7 @@ public class ConfiguratorAppModel {
         get { asset.stateManager.session }
         set {
             asset.stateManager.session = newValue
-            Self.omniverseMessageDispatcher.session = session
+            Self.omniverseMessageDispatcher.session = newValue
             Self.omniverseMessageDispatcher.attach(asset.stateManager)
         }
     }

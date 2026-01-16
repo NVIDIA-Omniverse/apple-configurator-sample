@@ -14,7 +14,6 @@ import os.log
 import simd
 import CloudXRKit
 
-
 /// Define the prim path client event.
 struct RequestPrimInfoInputEvent: MessageDictionary {
     public let message: [String: String]
@@ -75,7 +74,7 @@ class OmniversePrimComponent: Component {
 
     // The prim remote omniverse transform before the current update in gestures
     var remoteOmniversePrimTransform: Transform = .identity
-    
+
     // Local transform and camera transform matrices are used to handle OV camera/anchor changes.
     var localOmniversePrimTransform: Transform = .identity
     var latestCameraTransform: Transform = .identity
@@ -105,7 +104,7 @@ class OmniversePrimSystem: System, ServerMessageListener {
     var omniversePrimEntities: [Entity] = []
 
     var sendOVTransformationTask: Task<Void, Never>?
-    
+
     // Origin tracking
     var currentCameraTransform: Transform = .identity
 
@@ -116,7 +115,6 @@ class OmniversePrimSystem: System, ServerMessageListener {
     @AppStorage("usdInteractionVisualizationEnabled") private var usdInteractionVisualizationEnabled: Bool = true
 
     func update(context: SceneUpdateContext) {
-
         guard
             let omniversePrimEntitiesFound = OmniversePrimComponent.findEntitiesIn(context),
             let sessionEntity = CloudXRSessionComponent.findEntityIn(context),
@@ -156,7 +154,7 @@ class OmniversePrimSystem: System, ServerMessageListener {
                         component.representativeBoxCreated,
                         sendOVTransformationTask == nil
                     else { return }
-                    
+
                     // Handle the camera transform update if it has changed since the last frame.
                     if component.latestCameraTransform != currentCameraTransform {
                         // Undo the camera transform first.
@@ -184,12 +182,16 @@ class OmniversePrimSystem: System, ServerMessageListener {
                         }
                     }
                 }
-
             }
         }
     }
 
     private func sendPrimPath(session: Session) {
+        // Configure shared dispatcher with current session if not already set.
+        if ConfiguratorAppModel.omniverseMessageDispatcher.session !== session {
+            ConfiguratorAppModel.omniverseMessageDispatcher.session = session
+        }
+
         for entity in omniversePrimEntities {
             guard let component = entity.components[OmniversePrimComponent.self] else {
                 Self.logger.error("Missing omniverse prim componenent.")
@@ -197,8 +199,12 @@ class OmniversePrimSystem: System, ServerMessageListener {
             }
             defer { entity.components[OmniversePrimComponent.self] = component }
             if !component.shapeInfoRequested {
-                session.sendServerMessage(encodeJSON(RequestPrimInfoInputEvent(component.primPath)))
-                component.shapeInfoRequested = true
+                let messageData = encodeJSON(RequestPrimInfoInputEvent(component.primPath))
+                if ConfiguratorAppModel.omniverseMessageDispatcher.sendMessage(messageData) {
+                    component.shapeInfoRequested = true
+                } else {
+                    Self.logger.error("Failed to send prim path request for \(component.primPath)")
+                }
             }
         }
     }
@@ -372,7 +378,7 @@ class OmniversePrimSystem: System, ServerMessageListener {
         if primParent.name != "Session" {
             primOVPosition = simd_float3(0, 0, 0)
         }
-        
+
         // For multiplying 100,  the unit position in Omniverse is 100 times smaller than in Xcode.
         // For subtracting by primOVPosition: In omniverse, if a prim is a root parent, it will set the initial position of the local
         // transform to be zero. But in xcode, the position of the local transform is relative to the sessionEntity, which is the
@@ -391,10 +397,20 @@ class OmniversePrimSystem: System, ServerMessageListener {
         ) * 100.0
 
         localTransformMatrix.translation = simd_float3(eventPositionX, eventPositionY, eventPositionZ)
-        session.sendServerMessage(encodeJSON(SetPrimTransformationInputEvent(
+
+        // Ensure shared dispatcher is using the current session.
+        if ConfiguratorAppModel.omniverseMessageDispatcher.session !== session {
+            ConfiguratorAppModel.omniverseMessageDispatcher.session = session
+        }
+
+        let messageData = encodeJSON(SetPrimTransformationInputEvent(
             omniversePrimComponent.primPath,
             transformation: localTransformMatrix
-        )))
+        ))
+
+        if !ConfiguratorAppModel.omniverseMessageDispatcher.sendMessage(messageData) {
+            Self.logger.error("Failed to send transformation for prim: \(omniversePrimComponent.primPath)")
+        }
     }
 
     // TODO: This is internal for tests, but we should not test private methods and test the actual exposed APIs of this class.

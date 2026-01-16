@@ -49,7 +49,7 @@ extension ForEach where ID == String, Content: View, Data.Element == any AssetEn
     }
 }
 
-public class AssetCamera: Identifiable {
+public class AssetCamera: Identifiable, MessageProtocol {
     /// name of camera entity in Omniverse
     public var ovName = ""
     /// English name to use in UI
@@ -65,6 +65,11 @@ public class AssetCamera: Identifiable {
         self.ovName = ovName
         self.description = description
         self.encodable = encodable
+    }
+
+    public func isEqualTo(_ other: MessageProtocol?) -> Bool {
+        guard let otherCamera = other as? AssetCamera else { return false }
+        return self.ovName == otherCamera.ovName
     }
 }
 

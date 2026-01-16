@@ -26,6 +26,7 @@ struct ViewingModeComponent: Component {
 
     weak var cloudXrEntity: Entity?
     weak var configuratorAppModel: ConfiguratorAppModel?
+    weak var configuratorViewModel: ConfiguratorViewModel?
 
     var currentViewing: ViewingModel? = nil
     var viewIsLoading: Bool = false
@@ -36,8 +37,9 @@ struct ViewingModeComponent: Component {
     var spinnerEntity: Entity?
     var initPortalPos: SIMD3<Float>? = nil
 
-    public init(configuratorAppModel: ConfiguratorAppModel, cloudXrEntity: Entity, spinnerEntity: Entity) {
+    public init(configuratorAppModel: ConfiguratorAppModel, configuratorViewModel: ConfiguratorViewModel, cloudXrEntity: Entity, spinnerEntity: Entity) {
         self.configuratorAppModel = configuratorAppModel
+        self.configuratorViewModel = configuratorViewModel
         self.cloudXrEntity = cloudXrEntity
         self.spinnerEntity = spinnerEntity
     }
@@ -161,16 +163,24 @@ class ViewingModeSystem: System {
                     sessionEntity.transform = .init()
                     // this means the first camera in the list should always be the "front" camera
                     if let frontCamera = configuratorAppModel.asset.exteriorCameras.first {
-                        session.sendServerMessage(encodeJSON(frontCamera.encodable))
+                        configuratorAppModel.send(frontCamera)
                     }
                 }
             }
         } else if viewingComponent.viewIsLoading,
            !configuratorAppModel.isAwaitingCompletion(viewingKey) {
             // Fade in the scene if we are done loading.
-            sceneEntity.setOpacity(1.0, from: sceneEntity.opacity, animated: true, duration: Self.fadeInDurationSeconds)
+            let sceneOpacity: Float = viewingComponent.configuratorViewModel?.isPlacing == true ? 0.5 : 1.0
+            sceneEntity.setOpacity(sceneOpacity, from: sceneEntity.opacity, animated: true, duration: Self.fadeInDurationSeconds)
             spinner.setOpacity(0.0, from: spinner.opacity, animated: true, duration: Self.fadeInDurationSeconds)
             viewingComponent.viewIsLoading = false
+        }
+
+        // Update scene opacity based on placement state
+        if !viewingComponent.viewIsLoading {
+            let currentOpacity = sceneEntity.opacity
+            let targetOpacity: Float = viewingComponent.configuratorViewModel?.isPlacing == true ? 0.5 : 1.0
+            sceneEntity.setOpacity(targetOpacity, from: currentOpacity, animated: true, duration: Self.fadeInDurationSeconds)
         }
 
         // Set portal camera transform based on portal position in the world.

@@ -28,6 +28,7 @@
 		01AFA46A2BF7D8C5004B6F6B /* UIStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AFA44E2BF7D8C5004B6F6B /* UIStyles.swift */; };
 		01AFA4732BF7D954004B6F6B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01AFA4712BF7D954004B6F6B /* Preview Assets.xcassets */; };
 		01B788302C5A624600BC7728 /* Placeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B7882F2C5A624600BC7728 /* Placeable.swift */; };
+		01C927EC2CB9BF64006D4D8D /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = 01C927EB2CB9BF64006D4D8D /* CloudXRKit */; };
 		3C4885C12D36F05500108A07 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4885BF2D36F05300108A07 /* Utilities.swift */; };
 		3C4885C32D370D8100108A07 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4885BF2D36F05300108A07 /* Utilities.swift */; };
 		5573C2282DA38E5800C7003B /* ServerMessageDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5573C21F2DA38E5800C7003B /* ServerMessageDispatcher.swift */; };
@@ -37,6 +38,11 @@
 		5573C3912DA4B5A400C7003B /* LaunchView+iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5573C3902DA4B5A400C7003B /* LaunchView+iOS.swift */; };
 		5573C5362DA6DC6400C7003B /* ServerActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5573C5342DA6DC6000C7003B /* ServerActionsView.swift */; };
 		5573C5372DA70EFC00C7003B /* ServerActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5573C5342DA6DC6000C7003B /* ServerActionsView.swift */; };
+		8602F80E2E3845780038864F /* SessionConfigView+iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8602F80D2E3845780038864F /* SessionConfigView+iOS.swift */; };
+		8602F8102E3845880038864F /* SessionConfigView+visionOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8602F80F2E3845880038864F /* SessionConfigView+visionOS.swift */; };
+		8650F4D72E6949F9009E755A /* MainContentView+visionOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8650F4D62E6949F9009E755A /* MainContentView+visionOS.swift */; };
+		868218DC2E2EF509005ED313 /* GuestMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868218DB2E2EF4FF005ED313 /* GuestMode.swift */; };
+		868218DD2E2EF509005ED313 /* GuestMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868218DB2E2EF4FF005ED313 /* GuestMode.swift */; };
 		9C981CE92D30968500C3A953 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01AFA43D2BF7D8C5004B6F6B /* Assets.xcassets */; };
 		9CAEE0C72D307CF90030E3F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AFA43B2BF7D8C5004B6F6B /* AppDelegate.swift */; };
 		9CAEE0CC2D307CF90030E3F6 /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AFA44D2BF7D8C5004B6F6B /* UIConstants.swift */; };
@@ -44,6 +50,7 @@
 		9CAEE0D82D307CF90030E3F6 /* StarRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A725B02F2C6EC005000248FE /* StarRatingView.swift */; };
 		9CAEE0D92D307CF90030E3F6 /* SessionConfigView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016548C92CD53782009F33B0 /* SessionConfigView+extensions.swift */; };
 		9CAEE0E62D307CF90030E3F6 /* SessionConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AFA4412BF7D8C5004B6F6B /* SessionConfigView.swift */; };
+		9CAEE0EB2D307CF90030E3F6 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9CAEE0BD2D307CF90030E3F6 /* CloudXRKit */; };
 		9CAEE0ED2D307CF90030E3F6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01AFA4712BF7D954004B6F6B /* Preview Assets.xcassets */; };
 		9CAEE0EE2D307CF90030E3F6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 01AFA44B2BF7D8C5004B6F6B /* Settings.bundle */; };
 		9CAEE0EF2D307CF90030E3F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01AFA43D2BF7D8C5004B6F6B /* Assets.xcassets */; };
@@ -53,8 +60,7 @@
 		A725B0302C6EC005000248FE /* StarRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A725B02F2C6EC005000248FE /* StarRatingView.swift */; };
 		BD00C8412D31D6CE006A341D /* UIStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AFA44E2BF7D8C5004B6F6B /* UIStyles.swift */; };
 		BD00C8452D31E34A006A341D /* UIStyles+visionOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD00C8442D31E33D006A341D /* UIStyles+visionOS.swift */; };
-		DA956B542E2AD283003ABC02 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA956B532E2AD283003ABC02 /* CloudXRKit */; };
-		DA956B562E2AD28C003ABC02 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = DA956B552E2AD28C003ABC02 /* CloudXRKit */; };
+		C5E3A0522F1AF9E3001D89F3 /* CloudXRKit in Frameworks */ = {isa = PBXBuildFile; productRef = C5E3A0512F1AF9E3001D89F3 /* CloudXRKit */; };
 		FB9895E82E00F1970041368D /* WindowStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9895E72E00F1970041368D /* WindowStateManager.swift */; };
 		FB9895E92E00F1970041368D /* WindowStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB9895E72E00F1970041368D /* WindowStateManager.swift */; };
 		FBAAC52A2D2FC3E500F2117D /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAAC5292D2FC3E500F2117D /* TestHelper.swift */; };
@@ -99,12 +105,18 @@
 		5573C2392DA39E4500C7003B /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		5573C3902DA4B5A400C7003B /* LaunchView+iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LaunchView+iOS.swift"; sourceTree = "<group>"; };
 		5573C5342DA6DC6000C7003B /* ServerActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerActionsView.swift; sourceTree = "<group>"; };
+		8602F80D2E3845780038864F /* SessionConfigView+iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionConfigView+iOS.swift"; sourceTree = "<group>"; };
+		8602F80F2E3845880038864F /* SessionConfigView+visionOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionConfigView+visionOS.swift"; sourceTree = "<group>"; };
+		8650F4D62E6949F9009E755A /* MainContentView+visionOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainContentView+visionOS.swift"; sourceTree = "<group>"; };
+		868218DB2E2EF4FF005ED313 /* GuestMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestMode.swift; sourceTree = "<group>"; };
+		869B09A32E5E222F001EACAD /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		9CAEE0F42D307CF90030E3F6 /* Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Configurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CAEE0F52D307CF90030E3F6 /* CombinedViewer-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CombinedViewer-iOS-Info.plist"; sourceTree = "<group>"; };
 		9CAEE0F72D3082160030E3F6 /* CombinedViewer-visionOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CombinedViewer-visionOS-Info.plist"; sourceTree = "<group>"; };
 		9CC51E172D308742003A1CF0 /* Color+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+hex.swift"; sourceTree = "<group>"; };
 		A725B02F2C6EC005000248FE /* StarRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingView.swift; sourceTree = "<group>"; };
 		BD00C8442D31E33D006A341D /* UIStyles+visionOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStyles+visionOS.swift"; sourceTree = "<group>"; };
+		DAB674CA2E1D5B73003DB343 /* CombinedViewer-visionOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CombinedViewer-visionOS.entitlements"; sourceTree = "<group>"; };
 		EAD044762B1E9D7D00EDCD8B /* Configurator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Configurator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB9895E72E00F1970041368D /* WindowStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowStateManager.swift; sourceTree = "<group>"; };
 		FBAAC5292D2FC3E500F2117D /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
@@ -129,7 +141,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA956B562E2AD28C003ABC02 /* CloudXRKit in Frameworks */,
+				9CAEE0EB2D307CF90030E3F6 /* CloudXRKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,7 +149,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA956B542E2AD283003ABC02 /* CloudXRKit in Frameworks */,
+				C5E3A0522F1AF9E3001D89F3 /* CloudXRKit in Frameworks */,
+				01C927EC2CB9BF64006D4D8D /* CloudXRKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +211,7 @@
 				5573C23B2DA3AFB700C7003B /* ConfiguratorHelpers */,
 				9CAEE0F52D307CF90030E3F6 /* CombinedViewer-iOS-Info.plist */,
 				5573C3902DA4B5A400C7003B /* LaunchView+iOS.swift */,
+				8602F80D2E3845780038864F /* SessionConfigView+iOS.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -208,8 +222,11 @@
 				01A9E5482C506B4F008B730E /* Placement */,
 				5573C2352DA3990C00C7003B /* ConfiguratorHelpers */,
 				01AFA4472BF7D8C5004B6F6B /* LaunchView+visionOS.swift */,
+				8650F4D62E6949F9009E755A /* MainContentView+visionOS.swift */,
+				8602F80F2E3845880038864F /* SessionConfigView+visionOS.swift */,
 				BD00C8442D31E33D006A341D /* UIStyles+visionOS.swift */,
 				9CAEE0F72D3082160030E3F6 /* CombinedViewer-visionOS-Info.plist */,
+				DAB674CA2E1D5B73003DB343 /* CombinedViewer-visionOS.entitlements */,
 			);
 			path = visionOS;
 			sourceTree = "<group>";
@@ -224,6 +241,7 @@
 				5573C5342DA6DC6000C7003B /* ServerActionsView.swift */,
 				01AFA4412BF7D8C5004B6F6B /* SessionConfigView.swift */,
 				016548C92CD53782009F33B0 /* SessionConfigView+extensions.swift */,
+				868218DB2E2EF4FF005ED313 /* GuestMode.swift */,
 				A725B02F2C6EC005000248FE /* StarRatingView.swift */,
 				01AFA44D2BF7D8C5004B6F6B /* UIConstants.swift */,
 				3C4885BF2D36F05300108A07 /* Utilities.swift */,
@@ -236,20 +254,13 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		DA34CF112DF9F839008F7C42 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		EAA206412B16737300B5867E = {
 			isa = PBXGroup;
 			children = (
 				01AFA4532BF7D8C5004B6F6B /* Configurator */,
 				01A8A6672BD99BC500D84DBC /* Tests */,
-				DA34CF112DF9F839008F7C42 /* Frameworks */,
 				EAA2066E2B16784400B5867E /* Products */,
+				869B09A32E5E222F001EACAD /* Config.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -305,7 +316,7 @@
 			);
 			name = "CombinedViewer-iOS";
 			packageProductDependencies = (
-				DA956B552E2AD28C003ABC02 /* CloudXRKit */,
+				9CAEE0BD2D307CF90030E3F6 /* CloudXRKit */,
 			);
 			productName = CloudXRViewer;
 			productReference = 9CAEE0F42D307CF90030E3F6 /* Configurator.app */;
@@ -329,7 +340,8 @@
 			);
 			name = "CombinedViewer-visionOS";
 			packageProductDependencies = (
-				DA956B532E2AD283003ABC02 /* CloudXRKit */,
+				01C927EB2CB9BF64006D4D8D /* CloudXRKit */,
+				C5E3A0512F1AF9E3001D89F3 /* CloudXRKit */,
 			);
 			productName = CloudXRViewer;
 			productReference = EAD044762B1E9D7D00EDCD8B /* Configurator.app */;
@@ -364,7 +376,7 @@
 			);
 			mainGroup = EAA206412B16737300B5867E;
 			packageReferences = (
-				DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */,
+				C5E3A0502F1AF9E3001D89F3 /* XCRemoteSwiftPackageReference "cloudxr-framework" */,
 			);
 			productRefGroup = EAA2066E2B16784400B5867E /* Products */;
 			projectDirPath = "";
@@ -424,12 +436,14 @@
 				9CAEE0C72D307CF90030E3F6 /* AppDelegate.swift in Sources */,
 				9CC51E192D308742003A1CF0 /* Color+hex.swift in Sources */,
 				9CAEE0CC2D307CF90030E3F6 /* UIConstants.swift in Sources */,
+				868218DD2E2EF509005ED313 /* GuestMode.swift in Sources */,
 				5573C2282DA38E5800C7003B /* ServerMessageDispatcher.swift in Sources */,
 				BD00C8412D31D6CE006A341D /* UIStyles.swift in Sources */,
 				5573C3912DA4B5A400C7003B /* LaunchView+iOS.swift in Sources */,
 				3C4885C32D370D8100108A07 /* Utilities.swift in Sources */,
 				9CAEE0D52D307CF90030E3F6 /* ViewerApp.swift in Sources */,
 				FB9895E82E00F1970041368D /* WindowStateManager.swift in Sources */,
+				8602F80E2E3845780038864F /* SessionConfigView+iOS.swift in Sources */,
 				9CAEE0D82D307CF90030E3F6 /* StarRatingView.swift in Sources */,
 				9CAEE0D92D307CF90030E3F6 /* SessionConfigView+extensions.swift in Sources */,
 				5573C5372DA70EFC00C7003B /* ServerActionsView.swift in Sources */,
@@ -446,6 +460,7 @@
 				01A9E54F2C506B4F008B730E /* PlacementManager.swift in Sources */,
 				01B788302C5A624600BC7728 /* Placeable.swift in Sources */,
 				5573C2312DA38E5800C7003B /* ServerMessageDispatcher.swift in Sources */,
+				8650F4D72E6949F9009E755A /* MainContentView+visionOS.swift in Sources */,
 				01AFA4572BF7D8C5004B6F6B /* AppDelegate.swift in Sources */,
 				01AFA4632BF7D8C5004B6F6B /* LaunchView+visionOS.swift in Sources */,
 				01AFA4692BF7D8C5004B6F6B /* UIConstants.swift in Sources */,
@@ -453,6 +468,7 @@
 				FBAAC52A2D2FC3E500F2117D /* TestHelper.swift in Sources */,
 				5573C23A2DA39E4900C7003B /* AppModel.swift in Sources */,
 				012DB5532C6BFC08009C4847 /* PlacementViewModifiers.swift in Sources */,
+				868218DC2E2EF509005ED313 /* GuestMode.swift in Sources */,
 				01A9E54A2C506B4F008B730E /* HelpView.swift in Sources */,
 				01AFA4562BF7D8C5004B6F6B /* ViewerApp.swift in Sources */,
 				012DB5512C6BFBFC009C4847 /* PlacedEntity.swift in Sources */,
@@ -467,6 +483,7 @@
 				FB9895E92E00F1970041368D /* WindowStateManager.swift in Sources */,
 				BD00C8452D31E34A006A341D /* UIStyles+visionOS.swift in Sources */,
 				01A9E54E2C506B4F008B730E /* PlacementHelp.swift in Sources */,
+				8602F8102E3845880038864F /* SessionConfigView+visionOS.swift in Sources */,
 				01AFA45D2BF7D8C5004B6F6B /* SessionConfigView.swift in Sources */,
 				01A9E5502C506B4F008B730E /* PlacementModel.swift in Sources */,
 			);
@@ -555,7 +572,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Configurator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Configurator";
-				XROS_DEPLOYMENT_TARGET = 2.0;
+				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Debug;
 		};
@@ -624,12 +641,13 @@
 				TARGETED_DEVICE_FAMILY = 7;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Configurator.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Configurator";
 				VALIDATE_PRODUCT = YES;
-				XROS_DEPLOYMENT_TARGET = 2.0;
+				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Release;
 		};
 		9CAEE0F22D307CF90030E3F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 869B09A32E5E222F001EACAD /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Futurama-iOS";
@@ -706,12 +724,12 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-DnotStrippedCar -DnotStrippedPurse -DnotStrippedGeneric -DnotStripped";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nvidia.purse-config";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "$(OTHER_SWIFT_FLAGS)";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = Configurator;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -729,6 +747,7 @@
 		};
 		9CAEE0F32D307CF90030E3F6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 869B09A32E5E222F001EACAD /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "Futurama-iOS";
@@ -799,11 +818,11 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-DnotStrippedCar -DnotStrippedPurse -DnotStrippedGeneric -DnotStripped";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nvidia.purse-config";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "$(OTHER_SWIFT_FLAGS)";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = Configurator;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -855,7 +874,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SUPPORTED_PLATFORMS = "xrsimulator xros";
 				TARGETED_DEVICE_FAMILY = visionOS;
-				XROS_DEPLOYMENT_TARGET = 2.0;
+				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Debug;
 		};
@@ -893,12 +912,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				SUPPORTED_PLATFORMS = "xrsimulator xros";
 				TARGETED_DEVICE_FAMILY = visionOS;
-				XROS_DEPLOYMENT_TARGET = 2.0;
+				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Release;
 		};
 		EAD044822B1E9D7E00EDCD8B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 869B09A32E5E222F001EACAD /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Futurama;
@@ -932,6 +952,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "Configurator/visionOS/CombinedViewer-visionOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -970,12 +991,12 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-DnotStrippedCar -DnotStrippedPurse -DnotStrippedGeneric -DnotStripped";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nvidia.purse-config";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "$(OTHER_SWIFT_FLAGS)";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = Configurator;
 				SDKROOT = xros;
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
@@ -988,12 +1009,13 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 7;
 				VISIONOS_FILES = "*+visionOS.*";
-				XROS_DEPLOYMENT_TARGET = 2.0;
+				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Debug;
 		};
 		EAD044832B1E9D7E00EDCD8B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 869B09A32E5E222F001EACAD /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Futurama;
@@ -1027,6 +1049,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = "Configurator/visionOS/CombinedViewer-visionOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1059,11 +1082,11 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = "$(MARKETING_VERSION)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-DnotStrippedCar -DnotStrippedPurse -DnotStrippedGeneric -DnotStripped";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.nvidia.purse-config";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "$(OTHER_SWIFT_FLAGS)";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = Configurator;
 				SDKROOT = xros;
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
@@ -1076,7 +1099,7 @@
 				TARGETED_DEVICE_FAMILY = 7;
 				VALIDATE_PRODUCT = YES;
 				VISIONOS_FILES = "*+visionOS.*";
-				XROS_DEPLOYMENT_TARGET = 2.0;
+				XROS_DEPLOYMENT_TARGET = 2.4;
 			};
 			name = Release;
 		};
@@ -1121,26 +1144,30 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section *//* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
-		DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */ = {
+		C5E3A0502F1AF9E3001D89F3 /* XCRemoteSwiftPackageReference "cloudxr-framework" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/NVIDIA/cloudxr-framework";
 			requirement = {
-				kind = exactVersion;
-				version = 5.0.1;
+				kind = upToNextMinorVersion;
+				minimumVersion = 6.0.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		DA956B532E2AD283003ABC02 /* CloudXRKit */ = {
+		01C927EB2CB9BF64006D4D8D /* CloudXRKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
+			productName = CloudXRKit;
+		};		9CAEE0BD2D307CF90030E3F6 /* CloudXRKit */ = {
+			isa = XCSwiftPackageProductDependency;
 			productName = CloudXRKit;
 		};
-		DA956B552E2AD28C003ABC02 /* CloudXRKit */ = {
+		C5E3A0512F1AF9E3001D89F3 /* CloudXRKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DA956B522E2AD283003ABC02 /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
+			package = C5E3A0502F1AF9E3001D89F3 /* XCRemoteSwiftPackageReference "cloudxr-framework" */;
 			productName = CloudXRKit;
 		};
 /* End XCSwiftPackageProductDependency section */

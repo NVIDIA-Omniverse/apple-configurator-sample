@@ -19,21 +19,24 @@ enum AuthMethod: String, CaseIterable {
 
 enum Zone: String, CaseIterable {
     case auto = "Auto"
-//    case us_east = "US East"
-//    case us_northwest = "US Northwest"
+    case us_east = "US East"
+    case us_northwest = "US Northwest"
     case us_west = "US West"
+    case eu_north = "EU North"
     case ipAddress = "Manual IP address"
 
     var id: String? {
         switch self {
         case .auto:
             nil // automatic
-//        case .us_east:
-//            "np-atl-03" // "us-east"
-//        case .us_northwest:
-//            "np-pdx-01" // "us-northwest"
+        case .us_east:
+           "np-atl-03" // "us-east"
+        case .us_northwest:
+           "np-pdx-01" // "us-northwest"
         case .us_west:
             "np-sjc6-04" // "us-west"
+        case .eu_north:
+            "np-sth-04" // "eu-north"
         default:
             nil
         }
@@ -42,7 +45,14 @@ enum Zone: String, CaseIterable {
 
 enum AppID: UInt, CaseIterable {
     // Add CMS IDs here
-    case unknown = 000_000_000
+    case unknown
+
+    var rawValue: UInt {
+        switch self {
+        case .unknown:
+            return 000_000_000
+        }
+    }
 }
 
 enum Application: String, CaseIterable {
@@ -67,17 +77,7 @@ enum Application: String, CaseIterable {
     }
 }
 
-
-let partnerIdentifier = ""
-
-var globalToken: String = ""
-
 extension SessionConfigView {
-    struct NonceReqData : Codable {
-        let cSessionId: String
-        let AWSALB: String
-    }
-
 
     var stateDescription: String {
         appModel.session?.state.description ?? ""
@@ -91,7 +91,6 @@ extension SessionConfigView {
         }
     }
 
-
     var usingGuestMode: Bool {
         authMethod == .guest && zone != .ipAddress
     }
@@ -100,31 +99,8 @@ extension SessionConfigView {
         switch appModel.session?.state {
         case .connecting, .authenticating, .authenticated, .disconnecting, .resuming, .pausing:
             true
-        case .connected, .paused:
-            false
         default:
             false
         }
     }
-
-
-    func getGuestNonce(url: URL) async throws -> String {
-        var req = URLRequest(url: url)
-
-        req.httpMethod = "POST"
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.setValue("application/json", forHTTPHeaderField: "Accept")
-        req.addValue("text/plain", forHTTPHeaderField: "Accept")
-        req.addValue("*/*", forHTTPHeaderField: "Accept")
-
-        req.httpBody = try! JSONEncoder().encode(NonceReqData(cSessionId: sessionId, AWSALB: awsalb))
-        let (data, _) = try await URLSession.shared.data(for: req)
-
-        struct NonceRespData : Codable {
-            let nonce: String
-        }
-        let nonceResp = try JSONDecoder().decode(NonceRespData.self, from: data)
-        return nonceResp.nonce
-    }
-
 }
