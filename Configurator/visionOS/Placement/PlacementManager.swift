@@ -93,15 +93,19 @@ final class PlacementManager {
     var planeDetectionUpdatesTask: Task<(), Never>?
 
     @MainActor
-    func start(session: Session, content: RealityViewContent, attachments: RealityViewAttachments) {
+    func start(session: Session, content: RealityViewContent, attachments: RealityViewAttachments) async -> Bool {
 #if targetEnvironment(simulator)
         // Placement isn't supported in the simulator
-        return
+        return false
 #else
-
         dprint("\(Self.self).\(#function)")
-        guard let placeable,
-              placeable.placementState == .started else { return }
+        guard await placementModel.requestWorldSensingAuthorization(session: session) == .allowed else {
+            return false
+        }
+
+        guard let placeable, placeable.placementState == .started else {
+            return false
+        }
 
         placeable.placementState = .starting
 
@@ -123,28 +127,27 @@ final class PlacementManager {
         let entity = Entity()
         let placeableObject = PlaceableObject("marker", renderContent: plane, previewEntity: entity)
 
-        Task {
-            placeable.placementState = .placing
-            dprint("\(Self.self).\(#function) now placing")
-            // Run the ARKit session after the user opens the immersive space.
-            // TODO: should this be moved to after placement model is set up?
-            await runARKitSession(session: session)
+        placeable.placementState = .placing
+        dprint("\(Self.self).\(#function) now placing")
+        // Run the ARKit session after the user opens the immersive space.
+        // TODO: should this be moved to after placement model is set up?
+        await runARKitSession(session: session)
 
-            assert(deviceAnchorUpdatesTask == nil)
-            deviceAnchorUpdatesTask = Task {
-                dprint("\(Self.self).\(#function) - PlacementModifier task 1: manager = \(self)")
-                await processDeviceAnchorUpdates()
-            }
-
-            assert(planeDetectionUpdatesTask == nil)
-            planeDetectionUpdatesTask = Task {
-                dprint("\(Self.self).\(#function) - PlacementModifier task 2: manager = \(self)")
-                await processPlaneDetectionUpdates()
-            }
-
-            await Self.buildCollisions(for: entity, using: plane)
-            select(placeableObject)
+        assert(deviceAnchorUpdatesTask == nil)
+        deviceAnchorUpdatesTask = Task {
+            dprint("\(Self.self).\(#function) - PlacementModifier task 1: manager = \(self)")
+            await processDeviceAnchorUpdates()
         }
+
+        assert(planeDetectionUpdatesTask == nil)
+        planeDetectionUpdatesTask = Task {
+            dprint("\(Self.self).\(#function) - PlacementModifier task 2: manager = \(self)")
+            await processPlaneDetectionUpdates()
+        }
+
+        await Self.buildCollisions(for: entity, using: plane)
+        select(placeableObject)
+        return true
 #endif
     }
 
@@ -160,7 +163,12 @@ final class PlacementManager {
         if placeable.placementState == .started {
             content.printHierarchy()
 
-            start(session: session, content: content, attachments: attachments)
+            Task {
+                let started = await start(session: session, content: content, attachments: attachments)
+                if !started {
+                    placeable.placementState = .none
+                }
+            }
         }
         guard placeable.placementState == .placing else { return }
         if let placementHelp = attachments.entity(for: Attachments.placementHelp) {
@@ -195,17 +203,9 @@ final class PlacementManager {
         dprint("\(Self.self).\(#function)")
         // Run a new set of providers every time when entering the immersive space.
         if PlaneDetectionProvider.isSupported {
-            await placementModel.requestWorldSensingAuthorization(session: session)
-            let authResult = await CloudXRSession.requestAuthorization(for: PlaneDetectionProvider.requiredAuthorizations)
-            if authResult[.worldSensing] != .allowed {
-                fatalError("World sensing is not supported on this device (e.g. simulator) or the user denied permission.")
-            }
             assert(planeDetection == nil)
             planeDetection = PlaneDetectionProvider()
             CloudXRSession.addDataProvidersToArKitSession([planeDetection])
-        } else {
-            // TODO; maybe move placingEntity in a circle, waiting for a tap()?
-            fatalError("horizontal plane detection not supported on this device (e.g. simulator)")
         }
     }
 

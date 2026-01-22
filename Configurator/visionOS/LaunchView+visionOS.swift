@@ -15,6 +15,7 @@ import CloudXRKit
 struct LaunchView: View {
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.scenePhase) var scenePhase
     @Environment(AppModel.self) var appModel
@@ -36,28 +37,23 @@ struct LaunchView: View {
 
     var body: some View {
         if application.isConfigurator {
-            // After connection, show the streaming view with the configurator options.
-            if appModel.showStreamingAppView {
-                OmniConfigurator(application: $application)
-            } else {
-                VStack {
-                    Spacer(minLength: 24)
-                    SessionConfigView(application: $application) {
-                        ViewingModeSystem.registerSystem()
-                        guard let session = appModel.session else {
-                            fatalError("No session available in the connection completion handler.")
-                        }
-                        configuratorAppModel.setup(application: application, configuratorViewModel: configuratorViewModel, session: session)
+            VStack {
+                Spacer(minLength: 24)
+                SessionConfigView(application: $application) {
+                    ViewingModeSystem.registerSystem()
+                    guard let session = appModel.session else {
+                        fatalError("No session available in the connection completion handler.")
+                    }
+                    configuratorAppModel.setup(application: application, configuratorViewModel: configuratorViewModel, session: session)
 
-                        showImmersiveSpace()
-                    }
-                    .onChange(of: scenePhase) {
-                        appModel.windowStateManager.windowOnScenePhaseChange(scenePhase: scenePhase)
-                    }
-                    Spacer(minLength: 24)
+                    showImmersiveSpace()
                 }
-                .glassBackgroundEffect()
+                .onChange(of: scenePhase) {
+                    appModel.windowStateManager.windowOnScenePhaseChange(scenePhase: scenePhase)
+                }
+                Spacer(minLength: 24)
             }
+            .glassBackgroundEffect()
         }
 
     }

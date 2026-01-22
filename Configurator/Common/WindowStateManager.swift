@@ -18,8 +18,8 @@ class WindowStateManager {
     // Logger instance for debugging and error tracking
     private static let logger = Logger()
 
-    // Current state of the main window visibility
-    private var windowVisible = false
+    // Current state of windows visibility
+    private var visibleWindows: Set<String> = []
 
     // Current state of the immersive space
     private(set) var immersiveSpaceActive = false
@@ -45,41 +45,62 @@ class WindowStateManager {
         set { lock.withLock { _pauseOnImmersiveSpaceDismissed = newValue } }
     }
 
-    // Configures the manager with necessary actions and session reference.
-    // Should be called before all other functions.
+    // Initializes the manager with necessary actions and session reference.
+    // Should be called at least once before any other functions.
     // - Parameters:
-    //   - cxrSession: The CloudXR session
+    //   - appModel: The app model instance
     //   - openImmersiveSpace: Action to open immersive space
     //   - dismissImmersiveSpace: Action to dismiss immersive space
     //   - openWindow: Action to open window
     //   - dismissWindow: Action to dismiss window
-    func windowOnAppear(appModel: AppModel,
-                        openImmersiveSpace: OpenImmersiveSpaceAction,
-                        dismissImmersiveSpace: DismissImmersiveSpaceAction,
-                        openWindow: OpenWindowAction,
-                        dismissWindow: DismissWindowAction) {
-        guard !windowVisible else {
-            fatalError("windowOnAppear called while window already open")
-        }
+    func configure(appModel: AppModel,
+                   openImmersiveSpace: OpenImmersiveSpaceAction,
+                   dismissImmersiveSpace: DismissImmersiveSpaceAction,
+                   openWindow: OpenWindowAction,
+                   dismissWindow: DismissWindowAction) {
+        self.appModel = appModel
+        self.openImmersiveSpace = openImmersiveSpace
+        self.dismissImmersiveSpace = dismissImmersiveSpace
+        self.openWindow = openWindow
+        self.dismissWindow = dismissWindow
 
-        if !configured {
-            self.appModel = appModel
-            self.openImmersiveSpace = openImmersiveSpace
-            self.dismissImmersiveSpace = dismissImmersiveSpace
-            self.openWindow = openWindow
-            self.dismissWindow = dismissWindow
-
-            configured = true
-        }
-
-        windowVisible = true
+        configured = true
     }
 
-    func windowOnDisappear() {
-        guard windowVisible else {
-            fatalError("windowOnDisappear called when window is already dismissed")
+    // Handles window appearance event.
+    // Behavior: This will also dismiss all other existing windows.
+    //
+    // - Parameters:
+    //   - windowId: The identifier of the window that appeared
+    func windowOnAppear(windowId: String) {
+        guard configured else {
+            fatalError("WindowStateManager not initialized when windowOnAppear called")
         }
-        windowVisible = false
+
+        Task { @MainActor in
+            for winId in visibleWindows {
+                if winId != windowId {
+                    dismissWindow(id: winId)
+                }
+            }
+        }
+
+        visibleWindows.insert(windowId)
+    }
+
+    // Handles window disappearance event.
+    //
+    // - Parameters:
+    //   - windowId: The identifier of the window that disappeared
+    func windowOnDisappear(windowId: String) {
+        guard configured else {
+            fatalError("WindowStateManager not initialized when windowOnDisappear called")
+        }
+        guard visibleWindows.contains(windowId) else {
+            fatalError("windowOnDisappear called when window \(windowId) is already dismissed")
+        }
+
+        visibleWindows.remove(windowId)
     }
 
     // For cases that window is closed but onDisappear() won't trigger
@@ -88,8 +109,8 @@ class WindowStateManager {
             fatalError("Window state manager not configured when scene phase changed")
         }
         if scenePhase == .inactive {
-            if windowVisible {
-                dismissWindow(id: launchTitle)
+            for windowId in visibleWindows {
+                dismissWindow(id: windowId)
             }
         } else if scenePhase == .active {
             if appModel.session?.state == .paused {
@@ -122,6 +143,18 @@ class WindowStateManager {
         }
     }
 
+    private func switchWindow(newWindowId: String) {
+        guard configured else {
+            fatalError("Window manager not configured when switching window")
+        }
+
+        Task { @MainActor in
+            if !visibleWindows.contains(newWindowId) {
+                openWindow(id: newWindowId)
+            }
+        }
+    }
+
     // Handles connection established event.
     // Behavior: Opens immersive space and optionally hides window based on settings.
     private func handleConnectionEstablished() async {
@@ -133,9 +166,7 @@ class WindowStateManager {
             await openImmersiveSpace(id: immersiveTitle)
         }
 
-        if await !ViewerApp.persistLaunchWindow {
-            await dismissWindow(id: launchTitle)
-        }
+        switchWindow(newWindowId: contentTitle)
     }
 
     // Handles disconnection event
@@ -145,9 +176,7 @@ class WindowStateManager {
             fatalError("Disconnection before window manager was configured")
         }
 
-        if windowVisible == false {
-            await openWindow(id: launchTitle)
-        }
+        switchWindow(newWindowId: launchTitle)
         if immersiveSpaceActive == true {
             await dismissImmersiveSpace()
         }
@@ -174,10 +203,8 @@ class WindowStateManager {
 
         immersiveSpaceActive = false
 
-        // If the window was not visible, open the window.
-        if windowVisible == false {
-            openWindow(id: launchTitle)
-        }
+        // If the launch window was not visible, switch to the launch window.
+        switchWindow(newWindowId: launchTitle)
 
         // Pause the session if necessary
         switch appModel.session?.state {
@@ -196,16 +223,23 @@ class WindowStateManager {
         }
     }
 
-    // Toggles the visibility of the main window
+    // Toggles the visibility of the window based on the current immersive space.
     func toggleWindow() {
         guard configured else {
             fatalError("Window manager is not configured when toggling the window")
         }
 
-        if windowVisible {
-            dismissWindow(id: launchTitle)
-        } else {
-            openWindow(id: launchTitle)
+        if !visibleWindows.isEmpty {
+            for windowId in visibleWindows {
+                dismissWindow(id: windowId)
+            }
+        }
+        else {
+            if immersiveSpaceActive {
+                switchWindow(newWindowId: contentTitle)
+            } else {
+                switchWindow(newWindowId: launchTitle)
+            }
         }
     }
 }

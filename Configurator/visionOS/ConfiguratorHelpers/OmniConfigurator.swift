@@ -13,14 +13,17 @@ import CloudXRKit
 import RealityKit
 
 struct OmniConfigurator: View {
+#if DEBUG
     @AppStorage("showDebug") var showDebugUI = true
+#else
+    @AppStorage("showDebug") var showDebugUI = false
+#endif
 
     enum Section {
         case configure
         case environment
         case hud
-        case launch
-        
+
         var title: String {
             switch self {
             case .configure:
@@ -29,8 +32,6 @@ struct OmniConfigurator: View {
                 "Environment"
             case .hud:
                 "HUD"
-            case .launch:
-                "Config Screen"
             }
         }
     }
@@ -70,8 +71,6 @@ struct OmniConfigurator: View {
                         HUDView(session: session, hudConfig: HUDConfig())
                     }
                 }
-            case .launch:
-                SessionConfigView(application: $application) {}
             }
         }
         .ornament(visibility: .visible, attachmentAnchor: .scene(.init(x: 0.5, y: 0.92))) {
@@ -88,18 +87,29 @@ struct OmniConfigurator: View {
                 }
                 .popover(isPresented: $showDebugPopup) {
                     Form {
+                        Button("Disconnect", role: .destructive) {
+                            appModel.showDisconnectionAlert = true
+                        }
+                        .confirmationDialog(
+                            "Do you really want to disconnect?",
+                            isPresented: Binding(
+                                get: { appModel.showDisconnectionAlert },
+                                set: { appModel.showDisconnectionAlert = $0 }
+                            ),
+                            titleVisibility: .visible
+                        ) {
+                            Button("Disconnect", role: .destructive) {
+                                appModel.session?.disconnect()
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        }
                         if showDebugUI {
-                            Button("HUD") {
+                            Button("Network Debug") {
                                 section = .hud
                                 showDebugPopup = false
                             }
                             .selectedStyle(isSelected: section == .hud)
                         }
-                        Button("Config Screen") {
-                            section = .launch
-                            showDebugPopup = false
-                        }
-                        .selectedStyle(isSelected: section == .launch)
                     }
                     .formStyle(.grouped)
                     .padding(.vertical)
@@ -112,7 +122,7 @@ struct OmniConfigurator: View {
         // align all the useful information to the top of the window
         Spacer()
     }
-    
+
     /// The titlebar at the top of the panel showing the panel name and controls at left and right
     var titleBar: some View {
         HStack {

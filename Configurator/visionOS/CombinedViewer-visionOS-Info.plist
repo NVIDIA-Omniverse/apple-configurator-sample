@@ -8,5 +8,9 @@
 	<string>Enables placing objects.</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>NISSAN_CONFIGURATOR_APP_ID</key>
+	<string>$(NISSAN_CONFIGURATOR_APP_ID)</string>
+	<key>PURSE_CONFIGURATOR_APP_ID</key>
+	<string>$(PURSE_CONFIGURATOR_APP_ID)</string>
 </dict>
 </plist>

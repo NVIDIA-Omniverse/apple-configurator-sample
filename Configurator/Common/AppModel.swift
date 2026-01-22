@@ -36,7 +36,7 @@ public class AppModel {
             return false
         }
 
-        if session.state == .connected || session.state == .connecting {
+        if session.state == .connected {
             return true
         }
 
@@ -50,7 +50,6 @@ public class AppModel {
     }
 
     #if os(visionOS)
-    let hmdProperties = HmdProperties()
     let windowStateManager = WindowStateManager()
     #endif
 }

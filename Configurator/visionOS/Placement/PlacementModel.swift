@@ -27,7 +27,7 @@ class PlacementModel {
     var providersStoppedWithError = false
     var sensingAuthorizationStatus: ARKitSession.AuthorizationStatus = .notDetermined
 
-    func requestWorldSensingAuthorization(session: Session) async {
+    func requestWorldSensingAuthorization(session: Session) async -> ARKitSession.AuthorizationStatus {
         dprint("\(Self.self).\(#function)")
         let authorizationResult = await CloudXRSession.requestAuthorization(for: PlaneDetectionProvider.requiredAuthorizations)
         // not sure we should be restricting to .worldSensing, but that's what the example code did..
@@ -36,5 +36,7 @@ class PlacementModel {
         } else {
             sensingAuthorizationStatus = .notDetermined
         }
+
+        return sensingAuthorizationStatus
     }
 }

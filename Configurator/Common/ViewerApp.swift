@@ -18,6 +18,7 @@ import CompositorServices
 #endif
 
 let launchTitle = "launch"
+let contentTitle = "content"
 let immersiveTitle = "immersive"
 
 @main
@@ -53,13 +54,12 @@ struct ViewerApp: App {
         TestHelper.configuratorAppModel = configuratorAppModel
         TestHelper.configuratorViewModel = configuratorViewModel
 
+        appDelegate.session = appModel.session
 #endif
     }
 
 #if os(visionOS)
     var body: some Scene {
-        FetchHmdPropertiesImmersiveSpace(hmdProperties: appModel.hmdProperties)
-
         WindowGroup(id: launchTitle) {
             LaunchView(application: $appModel.application)
                 .environment(appModel)
@@ -76,23 +76,17 @@ struct ViewerApp: App {
                     makeDisconnectionAlert()
                 }
                 .onAppear {
-                    appModel.windowStateManager
-                        .windowOnAppear(
-                            appModel: appModel,
-                            openImmersiveSpace: openImmersiveSpace,
-                            dismissImmersiveSpace: dismissImmersiveSpace,
-                            openWindow: openWindow,
-                            dismissWindow: dismissWindow
-                        )
-                    appDelegate.session = appModel.session
-                    if #available(visionOS 2.4, *) {
-                        // Skip the IPD check as the tracking system will do so
-                    } else {
-                        appModel.hmdProperties.beginIpdCheck(openImmersiveSpace: openImmersiveSpace, forceRefresh: false)
-                    }
+                    appModel.windowStateManager.configure(
+                        appModel: appModel,
+                        openImmersiveSpace: openImmersiveSpace,
+                        dismissImmersiveSpace: dismissImmersiveSpace,
+                        openWindow: openWindow,
+                        dismissWindow: dismissWindow
+                    )
+                    appModel.windowStateManager.windowOnAppear(windowId: launchTitle)
                 }
                 .onDisappear {
-                    appModel.windowStateManager.windowOnDisappear()
+                    appModel.windowStateManager.windowOnDisappear(windowId: launchTitle)
                 }
                 .onChange(of: appModel.session?.state) { oldState, newState in
                     guard let oldState, let newState else { return }
@@ -103,6 +97,52 @@ struct ViewerApp: App {
         }
         .defaultSize(Self.launchSize)
         .windowResizability(.contentSize)
+        .defaultWindowPlacement { content, context in
+            if let contentWindow = context.windows.first(
+                where: { $0.id == contentTitle }) {
+                WindowPlacement(.leading(contentWindow))
+            } else {
+                WindowPlacement()
+            }
+        }
+
+#if os(visionOS)
+        WindowGroup(id: contentTitle) {
+            MainContentView(application: $appModel.application)
+                .environment(appModel)
+                .environment(configuratorAppModel) // Configurator-specific.
+                .environment(configuratorViewModel) // Configurator-specific.
+                .frame(
+                    // Fixed-size window
+                    minWidth: Self.launchSize.width,
+                    maxWidth: Self.launchSize.width,
+                    minHeight: Self.launchSize.height,
+                    maxHeight: Self.launchSize.height
+                )
+                .onAppear {
+                    appModel.windowStateManager.windowOnAppear(windowId: contentTitle)
+                }
+                .onDisappear {
+                    appModel.windowStateManager.windowOnDisappear(windowId: contentTitle)
+                }
+                .onChange(of: appModel.session?.state) { oldState, newState in
+                    guard let oldState, let newState else { return }
+                    Task {
+                        await appModel.windowStateManager.onConnectionStateChanged(oldState: oldState, newState: newState)
+                    }
+                }
+        }
+        .defaultSize(Self.launchSize)
+        .windowResizability(.contentSize)
+        .defaultWindowPlacement { content, context in
+            if let launchWindow = context.windows.first(
+                where: { $0.id == launchTitle }) {
+                WindowPlacement(.trailing(launchWindow), width: 1024, height: 600)
+            } else {
+                WindowPlacement()
+            }
+        }
+#endif  // os(visionOS)
 
         ImmersiveSpace(id: immersiveTitle) {
             // Configurator-specific.
@@ -187,7 +227,7 @@ struct ViewerApp: App {
         }
     }
 #endif
-    
+
     func alertAndRetryIfError() {
         if let state = appModel.session?.state,
            case SessionState.disconnected(error: Result.failure(_)) = state
@@ -204,7 +244,7 @@ struct ViewerApp: App {
     func makeDisconnectionAlert() -> Alert {
         var errorMessage = "Connection failed without returning an error"
         let debugTips = "Please validate the configuration and, if using a local server instead of GDN, verify that Omniverse is ready."
-        
+
         // First check appModel session state
         switch appModel.session?.state {
         case .disconnected(let result):

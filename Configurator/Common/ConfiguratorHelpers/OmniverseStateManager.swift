@@ -40,11 +40,11 @@ public class OmniverseStateManager : ServerMessageListener {
     )
 
     public var serverResponseTimedOut = false
-    
+
     weak var session: Session?
     var serverListener: Task<Void, Never>? = nil
-    let stateDispatchQueue  = DispatchQueue(label: "State Update Dispatch Queue")
-    
+    let stateDispatchQueue = DispatchQueue(label: "State Update Dispatch Queue")
+
     private let resyncDuration: TimeInterval
     private let resyncCountTimeout: Int
 
@@ -94,7 +94,7 @@ public class OmniverseStateManager : ServerMessageListener {
             sync()
         }
     }
-    
+
     public func desiredState(_ key: String) -> (any MessageProtocol)? {
         guard let asset else {
             fatalError("nil asset")
@@ -117,7 +117,7 @@ public class OmniverseStateManager : ServerMessageListener {
     }
 
     public func sync() {
-        guard let session = self.session else {
+        guard session != nil else {
             return
         }
 
@@ -129,25 +129,34 @@ public class OmniverseStateManager : ServerMessageListener {
                     continue
                 } else {
                     Self.logger.info("Sending state to server: \(state.desiredState.encodable.message.description)")
-                    session.sendServerMessage(encodeJSON(state.desiredState.encodable))
-                    if state.serverNotifiesCompletion {
-                        newState.waitingForCompletion = true
+                    let messageData = encodeJSON(state.desiredState.encodable)
+                    // Note that this sends the message to the first available channel and we assume the application
+                    // creates the first channel to receive client UI messages.
+                    if ConfiguratorAppModel.omniverseMessageDispatcher.sendMessage(messageData) {
+                        if state.serverNotifiesCompletion {
+                            newState.waitingForCompletion = true
+                        } else {
+                            newState.currentState = state.desiredState
+                        }
+                        newState.lastSync = CACurrentMediaTime()
+                        asset.stateDict[stateName] = newState
                     } else {
-                        newState.currentState = state.desiredState
+                        Self.logger.error("Failed to send state message for \(stateName)")
                     }
-                    newState.lastSync = CACurrentMediaTime()
-                    asset.stateDict[stateName] = newState
                 }
             }
         }
     }
 
     public func send(_ message: any MessageProtocol) {
-        guard let session = self.session else { return }
+        guard session != nil else { return }
         Self.logger.info("Sending message to server: \(message.encodable.message.description)")
-        session.sendServerMessage(encodeJSON(message.encodable))
+        let messageData = encodeJSON(message.encodable)
+        if !ConfiguratorAppModel.omniverseMessageDispatcher.sendMessage(messageData) {
+            Self.logger.error("Failed to send message: \(message.encodable.message.description)")
+        }
     }
-    
+
     public func resync() {
         if let asset {
             asset.stateDict.forEach {
@@ -159,7 +168,7 @@ public class OmniverseStateManager : ServerMessageListener {
         }
         sync()
     }
-    
+
     public func onMessageReceived(message: Data) {
         if let asset, let decodedMessage = try? JSONSerialization.jsonObject(with: message, options: .mutableContainers) as? [String: String] {
             if decodedMessage["Type"] == asset.switchVariantCompleteType,
@@ -168,7 +177,7 @@ public class OmniverseStateManager : ServerMessageListener {
             }
         }
     }
-    
+
     private func variantCompletedCallback(_ variantName: String) {
         stateDispatchQueue.sync {
             guard let asset else { return }
@@ -186,7 +195,7 @@ public class OmniverseStateManager : ServerMessageListener {
             }
         }
     }
-    
+
     private func statePoll() {
         guard isActive else {
             dprint("Stopping omniverse state manager polling.")
@@ -228,4 +237,3 @@ public class OmniverseStateManager : ServerMessageListener {
         }
     }
 }
-
