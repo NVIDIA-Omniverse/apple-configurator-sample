@@ -1,4 +1,7 @@
-# Configurator Sample
+# [DEPRECATED] Configurator Sample
+
+> **This repository is deprecated and no longer maintained.**
+> Please use [NVIDIA/cloudxr-apple-generic-viewer](https://github.com/NVIDIA/cloudxr-apple-generic-viewer) instead.
 
 Sample configurator apps using CloudXR client SDK for visionOS and iOS.
 
